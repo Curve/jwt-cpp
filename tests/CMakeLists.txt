@@ -29,6 +29,11 @@ set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/TokenTest.cpp ${CMAKE_CURRENT_SOURCE_DIR}/JwksTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/OpenSSLErrorTest.cpp ${CMAKE_CURRENT_SOURCE_DIR}/traits/NlohmannTest.cpp)
 
+find_package(glaze CONFIG)
+if(TARGET glaze)
+  list(APPEND TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/traits/GlazeTest.cpp)
+endif()
+
 find_package(jsoncons CONFIG)
 if(TARGET jsoncons)
   list(APPEND TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/traits/JsonconsTest.cpp)
@@ -60,6 +65,9 @@ if(HUNTER_ENABLED)
 else()
   # https://github.com/google/googletest/blob/eb80f759d595874a5e905a3342bd8e2af4c0a12d/googletest/README.md?plain=1#L62-L64
   target_link_libraries(jwt-cpp-test PRIVATE GTest::gtest_main)
+  if(TARGET glaze)
+    target_link_libraries(jwt-cpp-test PRIVATE glaze)
+  endif()
   if(TARGET jsoncons)
     target_link_libraries(jwt-cpp-test PRIVATE jsoncons)
   endif()
