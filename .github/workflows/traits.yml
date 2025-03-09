@@ -30,6 +30,11 @@ jobs:
           sudo cmake --install .
 
       # Install the JSON library
+      - if: matrix.target.name == 'glaze'
+        uses: ./.github/actions/install/glaze
+        with:
+          version: ${{matrix.target.tag}}
+
       - if: matrix.target.name == 'danielaparker-jsoncons'
         uses: ./.github/actions/install/danielaparker-jsoncons
         with:
