@@ -5,6 +5,12 @@ if(NOT TARGET jwt-cpp)
   find_package(jwt-cpp CONFIG REQUIRED)
 endif()
 
+find_package(glaze CONFIG)
+if(TARGET glaze::glaze)
+  add_executable(glaze glaze.cpp)
+  target_link_libraries(glaze jwt-cpp::jwt-cpp glaze::glaze)
+endif()
+
 find_package(jsoncons CONFIG)
 if(TARGET jsoncons)
   add_executable(danielaparker-jsoncons danielaparker-jsoncons.cpp)

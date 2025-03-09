@@ -88,6 +88,6 @@ if(JWT_ENABLE_COVERAGE)
   include("code-coverage")
   setup_coverage(jwt-cpp-test)
   set(COVERAGE_EXCLUDES "/usr/**" "/home/*/.conan/**" "*test*" "*build*" "**/nlohmann/json.hpp"
-                        "**/picojson/picojson.h" "*boost*" "*jsoncons*")
+                        "**/picojson/picojson.h" "*boost*" "*jsoncons*" "*glaze*")
   setup_target_for_coverage_lcov(NAME coverage EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/jwt-cpp-test)
 endif()
