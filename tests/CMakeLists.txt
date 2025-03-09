@@ -30,7 +30,7 @@ set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/OpenSSLErrorTest.cpp ${CMAKE_CURRENT_SOURCE_DIR}/traits/NlohmannTest.cpp)
 
 find_package(glaze CONFIG)
-if(TARGET glaze)
+if(TARGET glaze::glaze)
   list(APPEND TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/traits/GlazeTest.cpp)
 endif()
 
@@ -65,8 +65,8 @@ if(HUNTER_ENABLED)
 else()
   # https://github.com/google/googletest/blob/eb80f759d595874a5e905a3342bd8e2af4c0a12d/googletest/README.md?plain=1#L62-L64
   target_link_libraries(jwt-cpp-test PRIVATE GTest::gtest_main)
-  if(TARGET glaze)
-    target_link_libraries(jwt-cpp-test PRIVATE glaze)
+  if(TARGET glaze::glaze)
+    target_link_libraries(jwt-cpp-test PRIVATE glaze::glaze)
   endif()
   if(TARGET jsoncons)
     target_link_libraries(jwt-cpp-test PRIVATE jsoncons)
