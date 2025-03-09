@@ -2536,6 +2536,36 @@ namespace jwt {
 										  is_valid_json_integer<value_type, integer_type>::value &&
 										  is_valid_json_boolean<value_type, boolean_type>::value;
 		};
+
+		template<typename json_traits, typename = void>
+		struct istream_parser {
+			static std::istream& parse(std::istream& is, typename json_traits::value_type& val) {
+				auto content = std::string{std::istreambuf_iterator<char>{is}, std::istreambuf_iterator<char>{}};
+				if (!json_traits::parse(val, content)) { is.setstate(std::ios::failbit); }
+				return is;
+			}
+		};
+
+		template<typename json_traits>
+		struct istream_parser<json_traits, void_t<decltype(std::declval<std::istream&>() >>
+														   std::declval<typename json_traits::value_type&>())>> {
+			static std::istream& parse(std::istream& is, typename json_traits::value_type& val) { return is >> val; }
+		};
+
+		template<typename json_traits, typename = void>
+		struct ostream_serializer {
+			static std::ostream& serialize(std::ostream& os, typename json_traits::value_type& val) {
+				return os << json_traits::serialize(val);
+			}
+		};
+
+		template<typename json_traits>
+		struct ostream_serializer<json_traits, void_t<decltype(std::declval<std::ostream&>()
+															   << std::declval<typename json_traits::value_type&>())>> {
+			static std::ostream& serialize(std::ostream& os, typename json_traits::value_type& val) {
+				return os << val;
+			}
+		};
 	} // namespace details
 
 	/**
@@ -2600,13 +2630,15 @@ namespace jwt {
 		 * Parse input stream into underlying JSON value
 		 * \return input stream
 		 */
-		std::istream& operator>>(std::istream& is) { return is >> val; }
+		std::istream& operator>>(std::istream& is) { return details::istream_parser<json_traits>::parse(is, val); }
 
 		/**
 		 * Serialize claim to output stream from wrapped JSON value
 		 * \return output stream
 		 */
-		std::ostream& operator<<(std::ostream& os) { return os << val; }
+		std::ostream& operator<<(std::ostream& os) {
+			return details::ostream_serializer<json_traits>::serialize(os, val);
+		}
 
 		/**
 		 * Get type of contained JSON value
